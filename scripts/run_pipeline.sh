@@ -87,8 +87,9 @@ run_specCluster.py --f_in "$f_in" --fo "$fo" --fo_runDat "$fo_runDat" --predictO
 # run_clustVis.R orders clusters by KRT5 expression, with the highest PMEL at second to last and highest HLA-DRA cluster second to last
 # generates PCA plots colored by cluster, sample, tissue and common markers
 
-mkdir -p cl
-run_clustVis.R kasp_imputed/nFeat20_nClust10.csv $TSV $FEATHER cl
+CLDIR="cl"
+mkdir -p CLDIR
+run_clustVis.R kasp_imputed/nFeat20_nClust10.csv $TSV $FEATHER $CLDIR
 
 #Use coldata with sorted cluster assignments for clusterDE
-run_clustDE_feather.R $FEATHER ./cl/coldata_clust.csv cl
+run_clustDE_feather.R $FEATHER $CLDIR/coldata_clust.csv $CLDIR

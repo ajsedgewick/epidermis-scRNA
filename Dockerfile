@@ -26,6 +26,7 @@ RUN apt-get update \
        libcurl4-openssl-dev \
        libxml2-dev \
        libgsl0-dev \
+       libcairo2-dev \
    && add-apt-repository -y "ppa:marutter/rrutter" \
    && add-apt-repository -y "ppa:marutter/c2d4u" \
    && apt-get update 
@@ -41,9 +42,10 @@ RUN apt-get update \
 
 RUN Rscript -e "install.packages(c('devtools'), repos='http://cran.us.r-project.org')"
 
-RUN Rscript -e "install.packages(c('ggplot2', 'dplyr', 'ggvis', 'feather', 'openxlsx', 'Seurat'), repos='http://cran.us.r-project.org')"
+RUN Rscript -e "install.packages(c('ggplot2', 'dplyr', 'ggvis', 'feather', 'openxlsx', 'Seurat', 'statmod', 'svglite', 'reshape'), repos='http://cran.us.r-project.org')"
 
 RUN Rscript -e "source('https://bioconductor.org/biocLite.R'); \
+                biocLite('limma'); \
                 biocLite('zinbwave'); \
                 biocLite('clusterExperiment')"
 
@@ -55,8 +57,9 @@ RUN pip3 install feather-format
 # can specify UID here to make your life easier
 RUN useradd scuser && usermod -a -G sudo scuser
 
+RUN mkdir -p  /home/scuser \
+     && echo "R_MAX_NUM_DLLS=500" > /home/scuser/.Renviron \
+     && chown -R scuser /home/scuser \
+     && chgrp -R scuser /home/scuser
+
 USER scuser
-
-RUN mkdir -p  /home/scuser
-     && echo "R_MAX_NUM_DLLS=500" > /home/scuser/.Renviron
-
