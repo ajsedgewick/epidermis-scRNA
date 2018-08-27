@@ -93,4 +93,4 @@ mkdir -p CLDIR
 run_clustVis.R kasp_imputed/nFeat20_nClust10.csv $TSV $FEATHER $CLDIR
 
 #Use coldata with sorted cluster assignments for clusterDE
-run_clustDE_feather.R $FEATHER $CLDIR/coldata_clust.csv $CLDIR
+run_clustDE_feather.R --no-pso $FEATHER $CLDIR/coldata_clust.csv $CLDIR

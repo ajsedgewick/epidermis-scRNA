@@ -1,8 +1,20 @@
 #!/usr/bin/env Rscript
 args = commandArgs(trailingOnly=TRUE)
-if(length(args) !=3){
-    print("Usage: run_clustDE_feather.R countdata.feather coldata.tsv output_directory")
+usage =   "Usage: run_clustDE_feather.R [--no-pso] countdata.feather coldata.tsv output_directory"
+if(length(args) <3){
+    print(usage)
     quit("no", status=1)
+}
+
+no.pso = F
+if(length(args) ==4){
+    if(args[1] == "--no-pso"){
+        no.pso = T
+        args = args[-1]
+    } else {
+        print(usage)
+        quit("no", status=1)
+    }
 }
 
 library(feather)
@@ -26,34 +38,31 @@ if(file.exists(paste(Sys.getenv("SRCPATH"), "DE_functions.R"))) {
 countdata <- read_feather(args[1]) # should have countdata
 countdata <- column_to_rownames(data.frame(countdata, check.names=F))
 
+#filter genes
+is_quality <- rowSums(countdata >= 3) >= 100 #3 umi in 100 cells
+sum(is_quality)
+
+genes.use <- rownames(countdata)[is_quality]
+countdata <-  countdata[genes.use,]
+
+
 coldata <- read.table(args[2], sep=",", header=T, row.names=1, check.names=F) #should have coldata 
 
 outdir <- args[3]
-# Some code to read cluster assignments from a separate file
-#
-#if(length(args)==3) {
-#  outdir <- args[3]
-#} else if(length(args)>=4){
-#  clusts <- read.table(args[3], sep=",", row.names=1, header=F)
-#  if(min(clusts)==0){
-#    clusts <- clusts + 1
-#  }
-#
-#  countdata <- countdata[,rownames(clusts)]
-#  coldata <- coldata[rownames(clusts),]
-#  coldata$cluster <- as.factor(clusts[,1])
-#  outdir <- args[4]
-#}
 
-normal.cells <- rownames(subset(coldata, tissue == "trunk"))
+cells.use <- rownames(coldata)
+
+if(no.pso) {
+    cells.use <- rownames(subset(coldata, tissue != "psoriasis"))
+}
 
 coldata$cluster <- factor(coldata$cluster)
 
-coldata <- coldata[normal.cells,]
+coldata <- coldata[cells.use,]
 coldata$sample <- droplevels(coldata$sample)
 coldata$tissue <- droplevels(coldata$tissue)
 
-countdata <- countdata[,normal.cells]
+countdata <- countdata[,cells.use]
 
 #DE of each cluster versus the rest
 clust.de <- clustDE(coldata, countdata, logcpm=F,
@@ -85,3 +94,18 @@ clust.de <- clustDE(coldata, countdata, logcpm=F,
 #               outfile=paste(outdir, "trunkFCHeatmap.pdf", sep="/"))
 
 
+# Some code to read cluster assignments from a separate file
+#
+#if(length(args)==3) {
+#  outdir <- args[3]
+#} else if(length(args)>=4){
+#  clusts <- read.table(args[3], sep=",", row.names=1, header=F)
+#  if(min(clusts)==0){
+#    clusts <- clusts + 1
+#  }
+#
+#  countdata <- countdata[,rownames(clusts)]
+#  coldata <- coldata[rownames(clusts),]
+#  coldata$cluster <- as.factor(clusts[,1])
+#  outdir <- args[4]
+#}

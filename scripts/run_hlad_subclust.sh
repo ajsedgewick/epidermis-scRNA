@@ -51,14 +51,14 @@ fo="./kasp_imputed/${PREFIX}_nFeat${nfeat}_nClust${nClust}.csv"
 fo_runDat="./runData/${PREFIX}_kasp.runData"
 predictOnly="" ## /inputs/cellNames_exclude.txt
 alpha=2         ## the data reduction factor (see KASP reference (../README.txt)). For larger data sets 10 is gives good runtime .
-kmeans_frac=0.7  ## Fraction of the data used on which Kmeans round 1 is run (0.5 good for larger data sets). If not provided then Kmeans round 2 is skipped (see ../README.txt)
+# no kmeans_frac here
 kmeans_nJobs=1
 ka=10            ## MAGIC parameter for adaptive cell-cell similarity
 k=20             ### MAGIC parameter for adaptive cell-cell similarity
 N_nearest=10     ## Nearest neighbor method used to assign cells in predictOnly File to clusters (after fitting the clustering). This parameter sets number of nearest neighbors to consider for cluster assignment
 
 mkdir -p kasp_imputed
-run_specCluster.py --f_in "$f_in" --fo "$fo" --fo_runDat "$fo_runDat" --predictOnly "$predictOnly" --nfeat "$nfeat" --nClust "$nClust" --alpha "$alpha" --kmeans_nJobs "$kmeans_nJobs" --ka "$ka" --k "$k" --N_nearest "$N_nearest" # --kmeans_frac "$kmeans_frac"
+run_specCluster.py --f_in "$f_in" --fo "$fo" --fo_runDat "$fo_runDat" --predictOnly "$predictOnly" --nfeat "$nfeat" --nClust "$nClust" --alpha "$alpha" --kmeans_nJobs "$kmeans_nJobs" --ka "$ka" --k "$k" --N_nearest "$N_nearest"
 
 # run_clustVis.R orders clusters by KRT5 expression, with the highest PMEL at second to last and highest HLA-DRA cluster second to last
 # generates PCA plots colored by cluster, sample, tissue and common markers

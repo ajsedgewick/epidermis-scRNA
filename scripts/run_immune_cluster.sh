@@ -53,4 +53,4 @@ mkdir -p cl_immune
 run_clustVis.R ./kasp_imputed/nFeat20_nClust10_immune2_merged.csv $TSV magic_counts_t10.feather cl_immune
 
 #Use coldata with sorted cluster assignments for clusterDE
-run_clustDE_feather.R $FEATHER ./cl_immune/coldata_clust.csv cl_immune
+run_clustDE_feather.R --no-pso $FEATHER ./cl_immune/coldata_clust.csv cl_immune

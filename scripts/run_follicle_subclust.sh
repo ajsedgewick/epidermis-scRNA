@@ -57,7 +57,7 @@ k=20             ### MAGIC parameter for adaptive cell-cell similarity
 N_nearest=10     ## Nearest neighbor method used to assign cells in predictOnly File to clusters (after fitting the clustering). This parameter sets number of nearest neighbors to consider for cluster assignment
 
 mkdir -p kasp_imputed
-run_specCluster.py --f_in "$f_in" --fo "$fo" --fo_runDat "$fo_runDat" --predictOnly "$predictOnly" --nfeat "$nfeat" --nClust "$nClust" --alpha "$alpha" --kmeans_nJobs "$kmeans_nJobs" --ka "$ka" --k "$k" --N_nearest "$N_nearest"
+run_specCluster.py --f_in "$f_in" --fo "$fo" --fo_runDat "$fo_runDat" --predictOnly "$predictOnly" --nfeat "$nfeat" --nClust "$nClust" --alpha "$alpha" --kmeans_nJobs "$kmeans_nJobs" --ka "$ka" --k "$k" --N_nearest "$N_nearest" --kmeans_frac "$kmeans_frac"
 
 # run_clustVis.R orders clusters by KRT5 expression, with the highest PMEL at second to last and highest HLA-DRA cluster second to last
 # generates PCA plots colored by cluster, sample, tissue and common markers
