@@ -59,6 +59,7 @@ print("Loading Data")
 data = pd.read_csv(args.f_in, sep = "," , index_col = 0 )
 if args.nfeat is not None:
     data = data.iloc[: , 0:args.nfeat].copy()
+
 if args.predictOnly:
     predictOnly = readListFromFile(args.predictOnly)
     predictMask = data.index.isin(predictOnly )
@@ -66,6 +67,9 @@ if args.predictOnly:
                                                                   len(predictMask)))
     data_fit =data.loc[~predictMask, :  ].copy()
     data_predict = data.loc[predictMask, :].copy()
+else:
+    print("Using all samples for clustering")
+    data_fit = data.copy()
 
 print("Setting numpy random seed for thie session to: {:d}".format(args.seed))
 np.random.seed(args.seed)

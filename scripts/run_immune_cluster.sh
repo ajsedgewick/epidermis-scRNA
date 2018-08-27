@@ -1,15 +1,21 @@
 #!/bin/bash
 
-export PYTHONPATH="/single_cell/src"
-export PATH="/single_cell/src:$PATH"
 
-export DATA="/single_cell/data"
+export SRCPATH="/single_cell/src"
+export PYTHONPATH=$SRCPATH
+export PATH="${SRCPATH}:/single_cell/scripts:$PATH"
+
+export WORKINGDIR="/single_cell/run_dir"
+cd $WORKINGDIR
+
+export DATA="${WORKINGDIR}/data"
 
 # .feather file: raw countdata stored in the feather file format for rapid loading, rownames are in the first column labeled "rownames"
 export FEATHER=`ls $DATA/*.feather`
 
 # .tsv file    : metadata about the cells from the countdata, rownames(coldata) should match colnames(countdata)
 export TSV=`ls $DATA/*.tsv`
+
 
 # pull out PCs of immune cluster 10
 awk -F "," 'NR==FNR && NR==1 {for(i=1; i <=NF; i++) head[$i] = i }
@@ -44,7 +50,7 @@ awk -F "," 'BEGIN {OFS=","}
             NR > FNR && FNR > 1 && !($1 in cells) {print $0}' ./kasp_imputed/nFeat20_nClust2_immune.csv ./kasp_imputed/nFeat20_nClust10.csv > ./kasp_imputed/nFeat20_nClust10_immune2_merged.csv
 
 mkdir -p cl_immune
-run_clustVis.R ./kasp_imputed/nFeat20_nClust10_immune2_merged.csv $TSV $FEATHER cl_immune
+run_clustVis.R ./kasp_imputed/nFeat20_nClust10_immune2_merged.csv $TSV magic_counts_t10.feather cl_immune
 
 #Use coldata with sorted cluster assignments for clusterDE
 run_clustDE_feather.R $FEATHER ./cl_immune/coldata_clust.csv cl_immune

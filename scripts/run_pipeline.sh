@@ -6,8 +6,9 @@ export NSLOTS=80 #number of cores to use this should be set AUTOMATICALLY ON QUE
 
 export DATA="/single_cell/data"
 
-export PYTHONPATH="/single_cell/src"
-export PATH="/single_cell/src:$PATH"
+export SRCPATH="/single_cell/src"
+export PYTHONPATH=$SRCPATH
+export PATH="${SRCPATH}:/single_cell/scripts:$PATH"
 
 WORKDIR="/single_cell"
 cd $WORKDIR

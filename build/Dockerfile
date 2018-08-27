@@ -7,10 +7,21 @@ RUN apt-get update \
     && git checkout 3f5db2c193699c32974bb6f738149ad0b1fcef0b \
     && pip3 install . \
     && rm -rf /var/lib/apt/lists/*	
-COPY ./src /src
 
-ENV R_BASE_VERSION 3.4.4
+ENV R_BASE_VERSION 3.4.2*
 ENV DISTRIBUTION_CODENAME xenial
+
+RUN  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E084DAB9 \ 
+    && echo "deb http://cran.r-project.org/bin/linux/ubuntu ${DISTRIBUTION_CODENAME}/" >> /etc/apt/sources.list
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends r-base-core=${R_BASE_VERSION}* \
+               r-base=${R_BASE_VERSION}* \
+       	       r-base-dev=${R_BASE_VERSION}* \
+               r-recommended=${R_BASE_VERSION}* \
+               r-cran-kernsmooth r-cran-mgcv=1.8-22* r-cran-mass=7.3-47* \
+               r-cran-class \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update \ 
     && apt-get install -y --no-install-recommends \
@@ -27,30 +38,29 @@ RUN apt-get update \
        libxml2-dev \
        libgsl0-dev \
        libcairo2-dev \
-   && add-apt-repository -y "ppa:marutter/rrutter" \
-   && add-apt-repository -y "ppa:marutter/c2d4u" \
+       libhdf5-dev \
    && apt-get update 
 
 # RUN echo "deb http://http.debian.net/debian sid main" > /etc/apt/sources.list.d/debian-unstable.list \
 #    && echo 'APT::Default-Release "testing";' > /etc/apt/apt.conf.d/default
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends r-base=${R_BASE_VERSION}* \
-       	       r-base-dev=${R_BASE_VERSION}* \
-	       r-recommended=${R_BASE_VERSION}* \
-    && rm -rf /var/lib/apt/lists/*
 
 RUN Rscript -e "install.packages(c('devtools'), repos='http://cran.us.r-project.org')"
 
-RUN Rscript -e "install.packages(c('ggplot2', 'dplyr', 'ggvis', 'feather', 'openxlsx', 'Seurat', 'statmod', 'svglite', 'reshape'), repos='http://cran.us.r-project.org')"
+RUN Rscript -e "library(devtools); install_version('Rcpp', version='0.12.15', repos='http://cran.us.r-project.org')"
+
+RUN Rscript -e "install.packages(c('Matrix', 'ggplot2', 'dplyr', 'ggvis', 'feather', 'openxlsx', 'Seurat', 'statmod', 'svglite', 'reshape'), repos='http://cran.us.r-project.org')"
 
 RUN Rscript -e "source('https://bioconductor.org/biocLite.R'); \
                 biocLite('limma'); \
-                biocLite('zinbwave'); \
-                biocLite('clusterExperiment')"
+                biocLite('zinbwave')"
 
-RUN Rscript -e "library(devtools); install_github('igraph/rigraph'); \
-                install_github('kstreet13/slingshot')"
+RUN Rscript -e "library(devtools); install_github('igraph/rigraph', upgrade_dependencies=FALSE); \
+                install_github('kstreet13/slingshot', ref='0.1.2', upgrade_dependencies=FALSE)"
+
+RUN Rscript -e "library(devtools); \
+                install_github('epurdom/clusterExperiment', ref='v1.3.6', upgrade_dependencies=FALSE)"
+
 
 RUN pip3 install feather-format
 

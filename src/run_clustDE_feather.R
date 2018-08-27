@@ -8,7 +8,17 @@ if(length(args) !=3){
 library(feather)
 library(tibble)
 
-source("/single_cell/src/DE_functions.R")
+
+if(file.exists(paste(Sys.getenv("SRCPATH"), "DE_functions.R"))) {
+  source(paste(Sys.getenv("SRCPATH"), "DE_functions.R"))
+} else if(file.exists("../src/DE_functions.R")) {
+  source("../src/DE_functions.R")
+} else {
+  print("Can't find DE_functions.R")
+  quit("no", status=1)
+}
+
+#source("/single_cell/src/DE_functions.R")
 #source("/netapp/home/labjbc/src/DE_functions.R")
 #source("/home/jovyan/work/analysis_pipeline/plot_functions.R")
 

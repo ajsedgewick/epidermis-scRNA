@@ -21,7 +21,8 @@ clustDE <- function(coldata, countdata, outfile="clusterDE.xlsx", logcpm=F){
   cur.k <- length(levels(coldata$cluster))
   
   #design <- model.matrix(~0 + cluster + sample + percent.mito + nUMI, data=coldata)
-  design <- model.matrix(~0 + cluster + sample + percent.mito, data=coldata)
+  #design <- model.matrix(~0 + cluster + sample + percent.mito, data=coldata)
+  design <- model.matrix(~0 + cluster, data=coldata)
   #vm <- voom(countdata, design)
   #fit <- lmFit(vm, design)
    y <- new("EList")
