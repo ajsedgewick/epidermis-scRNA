@@ -90,7 +90,7 @@ run_specCluster.py --f_in "$f_in" --fo "$fo" --fo_runDat "$fo_runDat" --predictO
 
 CLDIR="cl"
 mkdir -p CLDIR
-run_clustVis.R kasp_imputed/nFeat20_nClust10.csv $TSV $FEATHER $CLDIR
+run_clustVis.R kasp_imputed/nFeat20_nClust10.csv $TSV magic_counts_t10.feather $CLDIR
 
 #Use coldata with sorted cluster assignments for clusterDE
 run_clustDE_feather.R --no-pso $FEATHER $CLDIR/coldata_clust.csv $CLDIR

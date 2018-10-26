@@ -47,19 +47,15 @@ RUN apt-get update \
 
 RUN Rscript -e "install.packages(c('devtools'), repos='http://cran.us.r-project.org')"
 
-RUN Rscript -e "library(devtools); install_version('Rcpp', version='0.12.15', repos='http://cran.us.r-project.org')"
-
 RUN Rscript -e "install.packages(c('Matrix', 'ggplot2', 'dplyr', 'ggvis', 'feather', 'openxlsx', 'Seurat', 'statmod', 'svglite', 'reshape'), repos='http://cran.us.r-project.org')"
 
 RUN Rscript -e "source('https://bioconductor.org/biocLite.R'); \
                 biocLite('limma'); \
-                biocLite('zinbwave')"
+                biocLite('zinbwave'); \
+                biocLite('clusterExperiment')"
 
-RUN Rscript -e "library(devtools); install_github('igraph/rigraph', upgrade_dependencies=FALSE); \
-                install_github('kstreet13/slingshot', ref='0.1.2', upgrade_dependencies=FALSE)"
-
-RUN Rscript -e "library(devtools); \
-                install_github('epurdom/clusterExperiment', ref='v1.3.6', upgrade_dependencies=FALSE)"
+RUN Rscript -e "library(devtools); install_github('igraph/rigraph'); \
+                install_github('kstreet13/slingshot')"
 
 
 RUN pip3 install feather-format
